@@ -10,7 +10,7 @@ import base64
 import string
 
 # 临时邮箱配置
-TEMP_MAIL_API = "https://em.proffko.ru"
+TEMP_MAIL_API = ""
 
 if not TEMP_MAIL_API or TEMP_MAIL_API == "":
     print("请先配置 TEMP_MAIL_API 变量")
@@ -419,3 +419,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print("\n用户取消操作")
         print("\n程序已终止")
+
