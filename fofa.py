@@ -10,7 +10,7 @@ import base64
 import string
 
 # 临时邮箱配置
-TEMP_MAIL_API = ""
+TEMP_MAIL_API = "https://em.proffko.ru"
 
 if not TEMP_MAIL_API or TEMP_MAIL_API == "":
     print("请先配置 TEMP_MAIL_API 变量")
@@ -169,7 +169,7 @@ load_send()
 temp_mail_jwt = None
 
 def register_temp_email(email_name, domain):
-    """在临时邮箱服务注册邮箱地址"""
+    """在临时邮箱服务注册邮箱地址，返回(成功与否, 实际邮箱地址)"""
     global temp_mail_jwt
     try:
         url = f"{TEMP_MAIL_API}/api/new_address"
@@ -184,13 +184,13 @@ def register_temp_email(email_name, domain):
             temp_mail_jwt = data.get('jwt')
             address = data.get('address')
             print(f"临时邮箱注册成功: {address}")
-            return True
+            return True, address
         else:
             print(f"临时邮箱注册失败: {response.text}")
-            return False
+            return False, None
     except Exception as e:
         print(f"注册临时邮箱失败: {e}")
-        return False
+        return False, None
 
 def get_verification_code(mail, max_retries=5, retry_interval=5):
     """获取邮件验证码，支持重试"""
@@ -386,8 +386,12 @@ def register_accounts(count):
         username, mail = generate_email()
         
         domain = mail.split('@')[1]
-        if not register_temp_email(username, domain):
+        success, actual_mail = register_temp_email(username, domain)
+        if not success:
             continue
+        
+        mail = actual_mail
+        username = mail.split('@')[0]
         
         nosecusers()
         
